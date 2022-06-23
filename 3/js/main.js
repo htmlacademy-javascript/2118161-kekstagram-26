@@ -1,4 +1,4 @@
-const MESSAGE = [
+const MESSAGES = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
   'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
@@ -48,7 +48,7 @@ const createComment = () => {
   return {
     id: ++commentNumber,
     avatar: `img/avatar-${avatarNumber}.svg`,
-    message: getRandomArrayElement(MESSAGE),
+    message: getRandomArrayElement(MESSAGES),
     name: getRandomArrayElement(NAMES),
   };
 };
