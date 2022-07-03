@@ -13,7 +13,7 @@ similarPhotos.forEach(({url, likes, comments}) => {
   const otherUserPhoto = photoTemplate.cloneNode(true);
   otherUserPhoto.querySelector('.picture__img').src = url;
   otherUserPhoto.querySelector('.picture__likes').textContent = likes;
-  otherUserPhoto.querySelector('.picture__comments').textContent = comments;
+  otherUserPhoto.querySelector('.picture__comments').textContent = comments.length;
   similarPhotosFragment.appendChild(otherUserPhoto);
 });
 
