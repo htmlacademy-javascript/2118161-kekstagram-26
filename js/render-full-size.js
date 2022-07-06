@@ -1,6 +1,6 @@
 const userPhotoWindow = document.querySelector('.big-picture');
 const commentsCount = userPhotoWindow.querySelector('.social__comment-count');
-const commentsLoader = userPhotoWindow.querySelector('.social__loader');
+const commentsLoader = userPhotoWindow.querySelector('.comments-loader');
 const commentsContainer = userPhotoWindow.querySelector('.social__comments');
 const canselButton = userPhotoWindow.querySelector('.big-picture__cancel');
 
