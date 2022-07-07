@@ -1,27 +1,43 @@
-const userPhotoWindow = document.querySelector('.big-picture');
-const commentsCount = userPhotoWindow.querySelector('.social__comment-count');
-const commentsLoader = userPhotoWindow.querySelector('.comments-loader');
-const commentsContainer = userPhotoWindow.querySelector('.social__comments');
-const canselButton = userPhotoWindow.querySelector('.big-picture__cancel');
+import {similarPhotos} from './render-miniatures.js';
+
+const fullPhotoWindow = document.querySelector('.big-picture');
+const canselButton = fullPhotoWindow.querySelector('.big-picture__cancel');
+const commentsCount = fullPhotoWindow.querySelector('.social__comment-count');
+const commentsLoader = fullPhotoWindow.querySelector('.comments-loader');
+const bigPictureImg = fullPhotoWindow.querySelector('.big-picture__img > img');
+const bigPictureLikesCount = fullPhotoWindow.querySelector('.likes-count');
+const bigPictureCommentsCount = fullPhotoWindow.querySelector('.comments-count');
+const commentsContainer = fullPhotoWindow.querySelector('.social__comments');
+const bigPictureDescription = fullPhotoWindow.querySelector('.social__caption');
+
+const usersPhotosContainer = document.querySelectorAll('.picture');
+
+const showFullPhotoWindow = () => {
+  document.body.classList.add('modal-open');
+};
 
 const closeFullSize = () => {
   document.body.classList.remove('modal-open');
-  userPhotoWindow.classList.add('hidden');
+  fullPhotoWindow.classList.add('hidden');
 };
 
-const renderFullSize = (photo) => {
-  const commentsContainerFragment = document.createDocumentFragment();
-
-  document.body.classList.add('modal-open');
-  userPhotoWindow.classList.remove('hidden');
+const hideUnusedElements = () => {
   commentsCount.classList.add('hidden');
   commentsLoader.classList.add('hidden');
+};
 
-  userPhotoWindow.querySelector('.big-picture__img').src = photo.url;
-  userPhotoWindow.querySelector('.likes-count').textContent = photo.likes;
-  userPhotoWindow.querySelector('.comments-count').textContent = photo.comments.length;
+const showFullPhoto = (photoElement, photoIndex) => {
+  bigPictureImg.src = photoElement.querySelector('.picture__img').src;
+  bigPictureLikesCount.textContent = photoElement.querySelector('.picture__likes').textContent;
+  bigPictureCommentsCount.textContent = photoElement.querySelector('.picture__comments').textContent;
+  bigPictureDescription.textContent = similarPhotos[photoIndex].description;
+  fullPhotoWindow.classList.remove('hidden');
+};
 
-  photo.comments.forEach(({avatar, name, message}) => {
+const setComments = (photoIndex) => {
+  const commentsContainerFragment = document.createDocumentFragment();
+
+  similarPhotos[photoIndex].comments.forEach(({avatar, name, message}) => {
     const comment = document.createElement('li');
     const commentAvatar = document.createElement('img');
     const commentText = document.createElement('p');
@@ -39,17 +55,24 @@ const renderFullSize = (photo) => {
 
     commentsContainerFragment.append(comment);
   });
+  commentsContainer.textContent = '';
   commentsContainer.append(commentsContainerFragment);
-
-  document.addEventListener('keydown', (evt) => {
-    if (evt.key === 'Esc') {
-      closeFullSize();
-    }
-  });
-
-  canselButton.addEventListener('click', () => {
-    closeFullSize();
-  });
 };
 
-export {renderFullSize};
+usersPhotosContainer.forEach((photo, index) => {
+  photo.addEventListener('click', showFullPhotoWindow);
+  photo.addEventListener('click', hideUnusedElements);
+  photo.addEventListener('click', () => showFullPhoto(photo, index));
+  photo.addEventListener('click', () => setComments(index));
+});
+
+canselButton.addEventListener('click', () => {
+  closeFullSize();
+});
+
+document.addEventListener('keydown', (evt) => {
+  if (evt.code === 'Escape') {
+    closeFullSize();
+  }
+});
+
