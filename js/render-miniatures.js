@@ -14,7 +14,9 @@ similarPhotos.forEach(({url, likes, comments}) => {
   otherUserPhoto.querySelector('.picture__img').src = url;
   otherUserPhoto.querySelector('.picture__likes').textContent = likes;
   otherUserPhoto.querySelector('.picture__comments').textContent = comments.length;
-  similarPhotosFragment.appendChild(otherUserPhoto);
+  similarPhotosFragment.append(otherUserPhoto);
 });
 
-otherUsersPhotosContainer.appendChild(similarPhotosFragment);
+otherUsersPhotosContainer.append(similarPhotosFragment);
+
+export {similarPhotos};
