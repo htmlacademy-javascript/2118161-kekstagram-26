@@ -1,7 +1,7 @@
 import {similarPhotos} from './render-miniatures.js';
 
 const fullPhotoWindow = document.querySelector('.big-picture');
-const canselButton = fullPhotoWindow.querySelector('.big-picture__cancel');
+const cancelButton = fullPhotoWindow.querySelector('.big-picture__cancel');
 const commentsCount = fullPhotoWindow.querySelector('.social__comment-count');
 const commentsLoader = fullPhotoWindow.querySelector('.comments-loader');
 const bigPictureImg = fullPhotoWindow.querySelector('.big-picture__img > img');
@@ -26,10 +26,10 @@ const hideUnusedElements = () => {
   commentsLoader.classList.add('hidden');
 };
 
-const showFullPhoto = (photoElement, photoIndex) => {
-  bigPictureImg.src = photoElement.querySelector('.picture__img').src;
-  bigPictureLikesCount.textContent = photoElement.querySelector('.picture__likes').textContent;
-  bigPictureCommentsCount.textContent = photoElement.querySelector('.picture__comments').textContent;
+const showFullPhoto = (photoIndex) => {
+  bigPictureImg.src = similarPhotos[photoIndex].url;
+  bigPictureLikesCount.textContent = similarPhotos[photoIndex].likes;
+  bigPictureCommentsCount.textContent = similarPhotos[photoIndex].comments.length;
   bigPictureDescription.textContent = similarPhotos[photoIndex].description;
   fullPhotoWindow.classList.remove('hidden');
 };
@@ -62,11 +62,11 @@ const setComments = (photoIndex) => {
 usersPhotosContainer.forEach((photo, index) => {
   photo.addEventListener('click', showFullPhotoWindow);
   photo.addEventListener('click', hideUnusedElements);
-  photo.addEventListener('click', () => showFullPhoto(photo, index));
-  photo.addEventListener('click', () => setComments(index));
+  photo.addEventListener('click', showFullPhoto.bind(null, index));
+  photo.addEventListener('click', setComments.bind(null, index));
 });
 
-canselButton.addEventListener('click', () => {
+cancelButton.addEventListener('click', () => {
   closeFullSize();
 });
 
