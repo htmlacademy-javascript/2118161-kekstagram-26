@@ -62,9 +62,7 @@ function closeFullPhotoModal () {
   document.body.classList.remove('modal-open');
   fullPhotoWindow.classList.add('hidden');
 
-  cancelButton.removeEventListener('click', () => {
-    closeFullPhotoModal();
-  });
+  cancelButton.removeEventListener('click', closeFullPhotoModal);
   document.removeEventListener('keydown', onFullPhotoEscKeydown);
 }
 
@@ -74,9 +72,7 @@ const openFullPhotoModal = (photoIndex) => {
   uploadPhotoAttributes(photoIndex);
   uploadComments(photoIndex);
 
-  cancelButton.addEventListener('click', () => {
-    closeFullPhotoModal();
-  });
+  cancelButton.addEventListener('click', closeFullPhotoModal);
   document.addEventListener('keydown', onFullPhotoEscKeydown);
 };
 
