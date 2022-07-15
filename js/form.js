@@ -21,23 +21,8 @@ const pristine = new Pristine(uploadFileForm, {
 const re = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
 
 const removeHashtagsExcessSpace = (value) => {
-  const hashtags = value.split(' ');
-  let emptyElementIndex = 0;
-
-  const hasEmptyElement = () => {
-    for (let i = 0; i < hashtags.length; i++) {
-      if (hashtags[i] === '') {
-        emptyElementIndex = i;
-        return true;
-      }
-    }
-    emptyElementIndex = 0;
-    return false;
-  };
-
-  while (hasEmptyElement()) {
-    hashtags.splice(emptyElementIndex, 1);
-  }
+  const hashtagsArray = value.split(' ');
+  const hashtags = hashtagsArray.filter((hashtag) => hashtag !== '');
   return hashtags;
 };
 
