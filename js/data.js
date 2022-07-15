@@ -28,7 +28,7 @@ const PLACES = [
   'на работе.',
   'на даче.'
 ];
-const SIMILAR_COMMENT_COUNT = 3;
+const SIMILAR_COMMENT_COUNT = 16;
 const SIMILAR_PUBLICATION_COUNT = 25;
 
 
