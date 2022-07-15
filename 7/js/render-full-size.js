@@ -51,31 +51,40 @@ const uploadComments = (photoIndex) => {
   commentsContainer.append(commentsContainerFragment);
 };
 
-const onFullPhotoEscKeydown = (evt) => {
+const openFullPhotoModal = (photoIndex) => {
+  document.body.classList.add('modal-open');
+  fullPhotoWindow.classList.remove('hidden');
+
+  uploadPhotoAttributes(photoIndex);
+  uploadComments(photoIndex);
+
+  cancelButton.addEventListener('click', onCancelButtonClick);
+  document.addEventListener('keydown', onFullPhotoEscKeydown);
+};
+
+const closeFullPhotoModal = () => {
+  document.body.classList.remove('modal-open');
+  fullPhotoWindow.classList.add('hidden');
+
+  cancelButton.removeEventListener('click', onCancelButtonClick);
+  document.removeEventListener('keydown', onFullPhotoEscKeydown);
+};
+
+function onCancelButtonClick () {
+  closeFullPhotoModal();
+}
+
+function onFullPhotoEscKeydown (evt) {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
     closeFullPhotoModal();
   }
-};
-
-function closeFullPhotoModal () {
-  document.body.classList.remove('modal-open');
-  fullPhotoWindow.classList.add('hidden');
-
-  cancelButton.removeEventListener('click', closeFullPhotoModal);
-  document.removeEventListener('keydown', onFullPhotoEscKeydown);
 }
 
-const openFullPhotoModal = (photoIndex) => {
-  document.body.classList.add('modal-open');
-  fullPhotoWindow.classList.remove('hidden');
-  uploadPhotoAttributes(photoIndex);
-  uploadComments(photoIndex);
-
-  cancelButton.addEventListener('click', closeFullPhotoModal);
-  document.addEventListener('keydown', onFullPhotoEscKeydown);
-};
+function onPhotoMiniatureClick (photoIndex) {
+  openFullPhotoModal(photoIndex);
+}
 
 usersPhotosContainer.forEach((photo, index) => {
-  photo.addEventListener('click', openFullPhotoModal.bind(null, index));
+  photo.addEventListener('click', onPhotoMiniatureClick.bind(null, index));
 });
