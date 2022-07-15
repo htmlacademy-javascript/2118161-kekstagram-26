@@ -109,7 +109,7 @@ const onSubmitUploadFileForm = (evt) => {
   }
 };
 
-function onCancelButtonClick () {
+const closeEditPhotoModal = () => {
   document.body.classList.remove('modal-open');
   photoEditNode.classList.add('hidden');
 
@@ -121,6 +121,10 @@ function onCancelButtonClick () {
   descriptionInputNode.removeEventListener('keydown', onTextInputNodeKeydown);
   cancelButton.removeEventListener('click', onCancelButtonClick);
   document.removeEventListener('keydown', onDocumentKeydown);
+};
+
+function onCancelButtonClick () {
+  closeEditPhotoModal();
 }
 
 const onUploadFileNodeChange = () => {
