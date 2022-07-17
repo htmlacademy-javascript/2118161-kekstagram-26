@@ -84,14 +84,9 @@ const uploadComments = (photoIndex) => {
   setVisibleCommentsCount();
 };
 
-const openFullPhotoModal = (clickedPhoto) => {
-  const clickedPhotoIndex = similarPhotos.findIndex( (photo) => clickedPhoto.src.endsWith(photo.url));
+const openFullPhotoModal = () => {
   document.body.classList.add('modal-open');
   fullPhotoWindow.classList.remove('hidden');
-
-  uploadPhotoAttributes(clickedPhotoIndex);
-  showCommentsAttributes();
-  uploadComments(clickedPhotoIndex);
 
   commentsLoaderButton.addEventListener('click', onCommentsLoaderButtonClick);
   cancelButton.addEventListener('click', onCancelButtonClick);
@@ -142,10 +137,15 @@ function onFullPhotoEscKeydown (evt) {
 }
 
 function onPhotoMiniatureClick (evt) {
-  if (evt.target.matches('.picture__img')) {
-    openFullPhotoModal(evt.target);
+  const clickedPhotoNode = evt.target.closest('.picture');
+  if (clickedPhotoNode) {
+    const clickedPhotoIndex = similarPhotos.findIndex( (photo) => clickedPhotoNode.children[0].src.endsWith(photo.url));
+    openFullPhotoModal();
+    uploadPhotoAttributes(clickedPhotoIndex);
+    showCommentsAttributes();
+    uploadComments(clickedPhotoIndex);
   }
 }
-otherUsersPhotosContainer.addEventListener('click', onPhotoMiniatureClick.bind());
+otherUsersPhotosContainer.addEventListener('click', onPhotoMiniatureClick);
 
 export {onPhotoMiniatureClick};
