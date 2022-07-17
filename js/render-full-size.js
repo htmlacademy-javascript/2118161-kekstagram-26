@@ -5,6 +5,7 @@ const COMMENT_AVATAR_WIDTH = 35;
 const COMMENT_AVATAR_HEIGHT = 35;
 const VISIBLE_COMMENT_COUNT = 5;
 
+const otherUsersPhotosContainer = document.querySelector('.pictures');
 const fullPhotoWindow = document.querySelector('.big-picture');
 const cancelButton = fullPhotoWindow.querySelector('.big-picture__cancel');
 const commentsCountLabel = fullPhotoWindow.querySelector('.social__comment-count');
@@ -16,8 +17,6 @@ const bigPictureLikesCount = fullPhotoWindow.querySelector('.likes-count');
 const bigPictureCommentsCount = fullPhotoWindow.querySelector('.comments-count');
 const commentsContainer = fullPhotoWindow.querySelector('.social__comments');
 const bigPictureDescription = fullPhotoWindow.querySelector('.social__caption');
-
-const usersPhotosContainer = document.querySelectorAll('.picture');
 
 const showCommentsAttributes = () => {
   commentsCountLabel.classList.remove('hidden');
@@ -85,13 +84,14 @@ const uploadComments = (photoIndex) => {
   setVisibleCommentsCount();
 };
 
-const openFullPhotoModal = (photoIndex) => {
+const openFullPhotoModal = (clickedPhoto) => {
+  const clickedPhotoIndex = similarPhotos.findIndex( (photo) => clickedPhoto.src.endsWith(photo.url));
   document.body.classList.add('modal-open');
   fullPhotoWindow.classList.remove('hidden');
 
-  uploadPhotoAttributes(photoIndex);
+  uploadPhotoAttributes(clickedPhotoIndex);
   showCommentsAttributes();
-  uploadComments(photoIndex);
+  uploadComments(clickedPhotoIndex);
 
   commentsLoaderButton.addEventListener('click', onCommentsLoaderButtonClick);
   cancelButton.addEventListener('click', onCancelButtonClick);
@@ -141,10 +141,11 @@ function onFullPhotoEscKeydown (evt) {
   }
 }
 
-function onPhotoMiniatureClick (photoIndex) {
-  openFullPhotoModal(photoIndex);
+function onPhotoMiniatureClick (evt) {
+  if (evt.target.matches('.picture__img')) {
+    openFullPhotoModal(evt.target);
+  }
 }
+otherUsersPhotosContainer.addEventListener('click', onPhotoMiniatureClick.bind());
 
-usersPhotosContainer.forEach((photo, index) => {
-  photo.addEventListener('click', onPhotoMiniatureClick.bind(null, index));
-});
+export {onPhotoMiniatureClick};
