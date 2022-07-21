@@ -1,4 +1,5 @@
 import {isEscapeKey} from './util.js';
+import {resetEdits, loadEditPhotoFuncs, unloadEditPhotoFuncs} from './edit-photo.js';
 
 const MAX_HASHTAGS_COUNT = 5;
 const MAX_DESCRIPTION_SYMBOLS_COUNT = 140;
@@ -94,13 +95,23 @@ const onSubmitUploadFileForm = (evt) => {
   }
 };
 
-const closeEditPhotoModal = () => {
-  document.body.classList.remove('modal-open');
-  photoEditNode.classList.add('hidden');
+const resetTextFields = () => {
+  const errorTextNodes = uploadFileForm.querySelectorAll('.input__error');
+  if (errorTextNodes.length > 0) {
+    errorTextNodes.forEach((textNode) => {textNode.textContent = '';});
+  }
 
   uploadFileNode.value = '';
   hashtagsInputNode.value = '';
   descriptionInputNode.value = '';
+};
+
+const closeEditPhotoModal = () => {
+  document.body.classList.remove('modal-open');
+  photoEditNode.classList.add('hidden');
+
+  resetTextFields();
+  unloadEditPhotoFuncs();
 
   hashtagsInputNode.removeEventListener('keydown', onTextInputNodeKeydown);
   descriptionInputNode.removeEventListener('keydown', onTextInputNodeKeydown);
@@ -112,15 +123,22 @@ function onCancelButtonClick () {
   closeEditPhotoModal();
 }
 
-const onUploadFileNodeChange = () => {
+const openEditPhotoModal = () => {
   document.body.classList.add('modal-open');
   photoEditNode.classList.remove('hidden');
+
+  resetEdits();
+  loadEditPhotoFuncs();
 
   hashtagsInputNode.addEventListener('keydown', onTextInputNodeKeydown);
   descriptionInputNode.addEventListener('keydown', onTextInputNodeKeydown);
   uploadFileForm.addEventListener('submit', onSubmitUploadFileForm);
   cancelButton.addEventListener('click', onCancelButtonClick);
   document.addEventListener('keydown', onDocumentKeydown);
+};
+
+const onUploadFileNodeChange = () => {
+  openEditPhotoModal();
 };
 
 uploadFileNode.addEventListener('change', onUploadFileNodeChange);
