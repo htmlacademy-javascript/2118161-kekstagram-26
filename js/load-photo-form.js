@@ -101,7 +101,6 @@ const resetTextFields = () => {
     errorTextNodes.forEach((textNode) => {textNode.textContent = '';});
   }
 
-  uploadFileNode.value = '';
   hashtagsInputNode.value = '';
   descriptionInputNode.value = '';
 };
