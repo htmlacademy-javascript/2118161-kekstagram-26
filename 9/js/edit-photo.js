@@ -75,13 +75,21 @@ const effectsFieldsetNode = document.querySelector('.img-upload__effects');
 const effectsLevelSlider = document.querySelector('.effect-level__slider');
 const effectsLevelValue = document.querySelector('.effect-level__value');
 
+let scale;
+let selectedEffect;
 
-let scale = DEFAULT_ZOOM_VALUE;
-let selectedEffect = 'none';
-zoomScaleLabel.value = '100 %';
-photoPreview.classList.add('effects__preview--none');
-effectsLevelSlider.style.visibility = 'hidden';
-photoPreview.style.filter = '';
+const resetEdits = () => {
+  scale = DEFAULT_ZOOM_VALUE;
+  selectedEffect = 'none';
+  zoomScaleLabel.value = '100 %';
+  photoPreview.style.transform = 'scale(1)';
+  photoPreview.className = '';
+  photoPreview.classList.add('effects__preview--none');
+  photoPreview.style.filter = '';
+  effectsLevelSlider.style.visibility = 'hidden';
+};
+
+resetEdits();
 
 const renderScalingPhoto = (evt) => {
   if (evt.target.matches('.scale__control--smaller') && scale > MIN_ZOOM_VALUE) {
@@ -100,7 +108,6 @@ const onZoomButtonClick = (evt) => {
   renderScalingPhoto(evt);
 };
 
-
 noUiSlider.create(effectsLevelSlider, {
   range: {
     min: 0,
@@ -111,12 +118,14 @@ noUiSlider.create(effectsLevelSlider, {
   connect: 'lower',
 });
 
-effectsLevelSlider.noUiSlider.on('update', () => {
+const onNoUiSliderUpdate = () => {
   const selectedFilterType = EFFECTS_OPTIONS[selectedEffect].filterName;
   const selectedFilterMeasureUnit = EFFECTS_OPTIONS[selectedEffect].measureUnit;
   effectsLevelValue.value = effectsLevelSlider.noUiSlider.get();
   photoPreview.style.filter = `${selectedFilterType}(${effectsLevelValue.value}${selectedFilterMeasureUnit})`;
-});
+};
+
+effectsLevelSlider.noUiSlider.on('update', onNoUiSliderUpdate);
 
 const renderPhotoEffect = (evt) => {
   const effectName = evt.target.value;
@@ -139,7 +148,16 @@ const onEffectsFieldsetNode = (evt) => {
   }
 };
 
-zoomOutButton.addEventListener('click', onZoomButtonClick);
-zoomInButton.addEventListener('click', onZoomButtonClick);
+const loadEditPhotoFuncs = () => {
+  zoomOutButton.addEventListener('click', onZoomButtonClick);
+  zoomInButton.addEventListener('click', onZoomButtonClick);
+  effectsFieldsetNode.addEventListener('change', onEffectsFieldsetNode);
+};
 
-effectsFieldsetNode.addEventListener('change', onEffectsFieldsetNode);
+const unloadEditPhotoFuncs = () => {
+  zoomOutButton.removeEventListener('click', onZoomButtonClick);
+  zoomInButton.removeEventListener('click', onZoomButtonClick);
+  effectsFieldsetNode.removeEventListener('change', onEffectsFieldsetNode);
+};
+
+export {resetEdits, loadEditPhotoFuncs, unloadEditPhotoFuncs};
