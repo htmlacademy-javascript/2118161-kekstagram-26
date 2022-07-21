@@ -147,5 +147,3 @@ function onPhotoMiniatureClick (evt) {
   }
 }
 otherUsersPhotosContainer.addEventListener('click', onPhotoMiniatureClick);
-
-export {onPhotoMiniatureClick};
