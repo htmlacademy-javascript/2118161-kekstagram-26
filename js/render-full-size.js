@@ -105,7 +105,7 @@ const showMoreComments = () => {
   const commentsHideNodes = commentsContainer.querySelectorAll('.hidden');
   const commentsHideCount = commentsHideNodes.length;
 
-  if (commentsHideCount >= VISIBLE_COMMENT_COUNT) {
+  if (commentsHideCount > VISIBLE_COMMENT_COUNT) {
     for (let i = 0; i < VISIBLE_COMMENT_COUNT; i++) {
       commentsHideNodes[i].classList.remove('hidden');
     }
