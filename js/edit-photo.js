@@ -79,6 +79,7 @@ let scale;
 let selectedEffect;
 
 const resetEdits = () => {
+  document.querySelector('#effect-none').checked = true;
   scale = DEFAULT_ZOOM_VALUE;
   selectedEffect = 'none';
   zoomScaleLabel.value = '100 %';
@@ -149,12 +150,14 @@ const onEffectsFieldsetNode = (evt) => {
 };
 
 const loadEditPhotoFuncs = () => {
+  resetEdits();
   zoomOutButton.addEventListener('click', onZoomButtonClick);
   zoomInButton.addEventListener('click', onZoomButtonClick);
   effectsFieldsetNode.addEventListener('change', onEffectsFieldsetNode);
 };
 
 const unloadEditPhotoFuncs = () => {
+  resetEdits();
   zoomOutButton.removeEventListener('click', onZoomButtonClick);
   zoomInButton.removeEventListener('click', onZoomButtonClick);
   effectsFieldsetNode.removeEventListener('change', onEffectsFieldsetNode);

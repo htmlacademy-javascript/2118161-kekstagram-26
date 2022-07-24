@@ -1,11 +1,9 @@
-import {similarPhotos} from './render-miniatures.js';
 import {isEscapeKey} from './util.js';
 
 const COMMENT_AVATAR_WIDTH = 35;
 const COMMENT_AVATAR_HEIGHT = 35;
 const VISIBLE_COMMENT_COUNT = 5;
 
-const otherUsersPhotosContainer = document.querySelector('.pictures');
 const fullPhotoWindow = document.querySelector('.big-picture');
 const cancelButton = fullPhotoWindow.querySelector('.big-picture__cancel');
 const commentsCountLabel = fullPhotoWindow.querySelector('.social__comment-count');
@@ -29,7 +27,7 @@ const hideCommentsAttributes = () => {
 };
 
 
-const uploadPhotoAttributes = (photoIndex) => {
+const uploadPhotoAttributes = (similarPhotos, photoIndex) => {
   bigPictureImg.src = similarPhotos[photoIndex].url;
   bigPictureLikesCount.textContent = similarPhotos[photoIndex].likes;
   bigPictureCommentsCount.textContent = similarPhotos[photoIndex].comments.length;
@@ -44,7 +42,7 @@ const setVisibleCommentsCount = () => {
   commentsCountVisibleLabel.textContent = commentsVisibleCount;
 };
 
-const uploadComments = (photoIndex) => {
+const uploadComments = (similarPhotos, photoIndex) => {
   const commentsContainerFragment = document.createDocumentFragment();
   const commentsAll = similarPhotos[photoIndex].comments;
   const commentsAllCount = commentsAll.length;
@@ -79,6 +77,7 @@ const uploadComments = (photoIndex) => {
   } else {
     hideCommentsAttributes();
   }
+
   commentsContainer.textContent = '';
   commentsContainer.append(commentsContainerFragment);
   setVisibleCommentsCount();
@@ -118,6 +117,7 @@ const showMoreComments = () => {
       commentsLoaderButton.classList.add('hidden');
     }
   }
+
   setVisibleCommentsCount();
 };
 
@@ -136,14 +136,4 @@ function onFullPhotoEscKeydown (evt) {
   }
 }
 
-function onPhotoMiniatureClick (evt) {
-  const clickedPhotoNode = evt.target.closest('.picture');
-  if (clickedPhotoNode) {
-    const clickedPhotoIndex = similarPhotos.findIndex( (photo) => clickedPhotoNode.children[0].src.endsWith(photo.url));
-    openFullPhotoModal();
-    uploadPhotoAttributes(clickedPhotoIndex);
-    showCommentsAttributes();
-    uploadComments(clickedPhotoIndex);
-  }
-}
-otherUsersPhotosContainer.addEventListener('click', onPhotoMiniatureClick);
+export {openFullPhotoModal, uploadPhotoAttributes, showCommentsAttributes, uploadComments};
