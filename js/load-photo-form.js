@@ -1,5 +1,6 @@
-import {isEscapeKey} from './util.js';
+import {isStringSatisfyMaxLength, isEscapeKey, openErrorLoadMessage, openSuccessLoadMessage} from './util.js';
 import {resetEdits, loadEditPhotoFuncs, unloadEditPhotoFuncs} from './edit-photo.js';
+import {sendData} from './api.js';
 
 const MAX_HASHTAGS_COUNT = 5;
 const MAX_DESCRIPTION_SYMBOLS_COUNT = 140;
@@ -61,10 +62,8 @@ const validateHashtagsRepeats = (value) => {
 const validateHashtagsRepeatsErrorMessage = 'Один и тот же хэш-тег не может быть использован дважды';
 
 const validateDescriptionSymbolsQuantity  = (description) => {
-  if (description.length > MAX_DESCRIPTION_SYMBOLS_COUNT) {
-    return false;
-  }
-  return true;
+  const valid = isStringSatisfyMaxLength(description, MAX_DESCRIPTION_SYMBOLS_COUNT);
+  return valid;
 };
 const validateDescriptionSymbolsQuantityErrorMessage = 'Длина комментария не может составлять больше 140 символов';
 
@@ -73,27 +72,25 @@ pristine.addValidator(hashtagsInputNode, validateHashtagsQuantity, validateHasht
 pristine.addValidator(hashtagsInputNode, validateHashtagsRepeats, validateHashtagsRepeatsErrorMessage);
 pristine.addValidator(descriptionInputNode, validateDescriptionSymbolsQuantity, validateDescriptionSymbolsQuantityErrorMessage);
 
-uploadFileForm.addEventListener('submit', (evt) => {
-  evt.preventDefault();
-  pristine.validate();
-});
-
-const onDocumentKeydown = (evt) => {
-  if (isEscapeKey(evt)) {
-    evt.preventDefault();
-    onCancelButtonClick();
-  }
-};
-
 const onTextInputNodeKeydown = (evt) => {
   evt.stopPropagation();
 };
 
-const onSubmitUploadFileForm = (evt) => {
-  if (!pristine.validate()){
-    evt.preventDefault();
-  }
-};
+// const onSubmitUploadFileForm = (evt) => {
+//   evt.preventDefault();
+//   const isValid = pristine.validate();
+//   if (isValid) {
+//     const formData = new FormData(evt.target);
+
+//     fetch(
+//       'https://26.javascript.pages.academy/kekstagram',
+//       {
+//         method: 'POST',
+//         body: formData,
+//       },
+//     ).then(() => onSuccess());
+//   }
+// };
 
 const resetTextFields = () => {
   const errorTextNodes = uploadFileForm.querySelectorAll('.input__error');
@@ -109,11 +106,13 @@ const closeEditPhotoModal = () => {
   document.body.classList.remove('modal-open');
   photoEditNode.classList.add('hidden');
 
+  resetEdits();
   resetTextFields();
   unloadEditPhotoFuncs();
 
   hashtagsInputNode.removeEventListener('keydown', onTextInputNodeKeydown);
   descriptionInputNode.removeEventListener('keydown', onTextInputNodeKeydown);
+  //uploadFileForm.removeEventListener('submit', onSubmitUploadFileForm);
   cancelButton.removeEventListener('click', onCancelButtonClick);
   document.removeEventListener('keydown', onDocumentKeydown);
 };
@@ -131,13 +130,45 @@ const openEditPhotoModal = () => {
 
   hashtagsInputNode.addEventListener('keydown', onTextInputNodeKeydown);
   descriptionInputNode.addEventListener('keydown', onTextInputNodeKeydown);
-  uploadFileForm.addEventListener('submit', onSubmitUploadFileForm);
+  //uploadFileForm.addEventListener('submit', onSubmitUploadFileForm);
   cancelButton.addEventListener('click', onCancelButtonClick);
   document.addEventListener('keydown', onDocumentKeydown);
 };
+
+function onDocumentKeydown (evt) {
+  const openedErrorLoadMessage = document.querySelector('.error');
+  const openedSuccessLoadMessage = document.querySelector('.success');
+  if (isEscapeKey(evt) && !openedErrorLoadMessage && !openedSuccessLoadMessage) {
+    evt.preventDefault();
+    closeEditPhotoModal();
+  }
+}
 
 const onUploadFileNodeChange = () => {
   openEditPhotoModal();
 };
 
 uploadFileNode.addEventListener('change', onUploadFileNodeChange);
+
+const onSuccessSubmit = () => {
+  closeEditPhotoModal();
+  openSuccessLoadMessage();
+};
+
+const onErrorSubmit = () => {
+  //document.body.classList.remove('modal-open');
+  openErrorLoadMessage();
+};
+
+uploadFileForm.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+
+  const isValid = pristine.validate();
+  if (isValid) {
+    sendData(
+      () => onSuccessSubmit(),
+      () => onErrorSubmit(),
+      new FormData(evt.target),
+    );
+  }
+});
