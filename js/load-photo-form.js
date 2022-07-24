@@ -76,22 +76,6 @@ const onTextInputNodeKeydown = (evt) => {
   evt.stopPropagation();
 };
 
-// const onSubmitUploadFileForm = (evt) => {
-//   evt.preventDefault();
-//   const isValid = pristine.validate();
-//   if (isValid) {
-//     const formData = new FormData(evt.target);
-
-//     fetch(
-//       'https://26.javascript.pages.academy/kekstagram',
-//       {
-//         method: 'POST',
-//         body: formData,
-//       },
-//     ).then(() => onSuccess());
-//   }
-// };
-
 const resetTextFields = () => {
   const errorTextNodes = uploadFileForm.querySelectorAll('.input__error');
   if (errorTextNodes.length > 0) {
@@ -112,7 +96,7 @@ const closeEditPhotoModal = () => {
 
   hashtagsInputNode.removeEventListener('keydown', onTextInputNodeKeydown);
   descriptionInputNode.removeEventListener('keydown', onTextInputNodeKeydown);
-  //uploadFileForm.removeEventListener('submit', onSubmitUploadFileForm);
+  uploadFileForm.removeEventListener('submit', onSubmitUploadFileForm);
   cancelButton.removeEventListener('click', onCancelButtonClick);
   document.removeEventListener('keydown', onDocumentKeydown);
 };
@@ -130,7 +114,7 @@ const openEditPhotoModal = () => {
 
   hashtagsInputNode.addEventListener('keydown', onTextInputNodeKeydown);
   descriptionInputNode.addEventListener('keydown', onTextInputNodeKeydown);
-  //uploadFileForm.addEventListener('submit', onSubmitUploadFileForm);
+  uploadFileForm.addEventListener('submit', onSubmitUploadFileForm);
   cancelButton.addEventListener('click', onCancelButtonClick);
   document.addEventListener('keydown', onDocumentKeydown);
 };
@@ -156,11 +140,10 @@ const onSuccessSubmit = () => {
 };
 
 const onErrorSubmit = () => {
-  //document.body.classList.remove('modal-open');
   openErrorLoadMessage();
 };
 
-uploadFileForm.addEventListener('submit', (evt) => {
+function onSubmitUploadFileForm (evt) {
   evt.preventDefault();
 
   const isValid = pristine.validate();
@@ -171,4 +154,6 @@ uploadFileForm.addEventListener('submit', (evt) => {
       new FormData(evt.target),
     );
   }
-});
+}
+
+// uploadFileForm.addEventListener('submit', onSubmitUploadFileForm);
