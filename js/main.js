@@ -6,7 +6,6 @@ import {openErrorGetDataMessage, debounce} from './util.js';
 const RANDOM_PHOTOS_COUNT = 10;
 
 const filtersPanel = document.querySelector('.img-filters');
-filtersPanel.classList.remove('img-filters--inactive');
 
 getData(
   (photos) => {
@@ -20,6 +19,7 @@ getData(
     setDiscussedFilter(debounce(
       () => renderSimilarPhotos(photos.slice().sort(compareComments)),
     ));
+    filtersPanel.classList.remove('img-filters--inactive');
   },
   () => openErrorGetDataMessage()
 );

@@ -4,13 +4,16 @@ import {sendData} from './api.js';
 
 const MAX_HASHTAGS_COUNT = 5;
 const MAX_DESCRIPTION_SYMBOLS_COUNT = 140;
+const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
 const uploadFileForm = document.querySelector('.img-upload__form');
 const uploadFileNode = uploadFileForm.querySelector('#upload-file');
+const uploadPreview = uploadFileForm.querySelector('.img-upload__preview > img');
 const photoEditNode = uploadFileForm.querySelector('.img-upload__overlay');
 const hashtagsInputNode = uploadFileForm.querySelector('.text__hashtags');
 const descriptionInputNode = uploadFileForm.querySelector('.text__description');
 const cancelButton = photoEditNode.querySelector('#upload-cancel');
+const submitButton = photoEditNode.querySelector('#upload-submit');
 
 const pristine = new Pristine(uploadFileForm, {
   classTo: 'img-upload__field-wrapper',
@@ -129,25 +132,34 @@ function onDocumentKeydown (evt) {
 }
 
 const onUploadFileNodeChange = () => {
+  const file = uploadFileNode.files[0];
+  const fileName = file.name.toLowerCase();
+  const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
+
+  if (matches) {
+    uploadPreview.src = URL.createObjectURL(file);
+  }
   openEditPhotoModal();
 };
 
 uploadFileNode.addEventListener('change', onUploadFileNodeChange);
 
 const onSuccessSubmit = () => {
+  unblockSubmitButton();
   closeEditPhotoModal();
   openSuccessLoadMessage();
 };
 
 const onErrorSubmit = () => {
+  unblockSubmitButton();
   openErrorLoadMessage();
 };
 
 function onSubmitUploadFileForm (evt) {
-  evt.preventDefault();
-
   const isValid = pristine.validate();
+  evt.preventDefault();
   if (isValid) {
+    blockSubmitButton();
     sendData(
       () => onSuccessSubmit(),
       () => onErrorSubmit(),
@@ -156,4 +168,12 @@ function onSubmitUploadFileForm (evt) {
   }
 }
 
-// uploadFileForm.addEventListener('submit', onSubmitUploadFileForm);
+function blockSubmitButton () {
+  submitButton.disabled = true;
+  submitButton.textContent = 'Публикация...';
+}
+
+function unblockSubmitButton () {
+  submitButton.disabled = false;
+  submitButton.textContent = 'Опубликовать';
+}
