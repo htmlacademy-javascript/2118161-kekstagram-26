@@ -2,6 +2,7 @@ const MAX_ZOOM_VALUE = 100;
 const MIN_ZOOM_VALUE = 25;
 const STEP_ZOOM_VALUE = 25;
 const DEFAULT_ZOOM_VALUE = 100;
+const SCALE_FULL = 100;
 const EFFECTS_OPTIONS = {
   none: {
     filterName: '',
@@ -71,7 +72,7 @@ const zoomOutButton = document.querySelector('.scale__control--smaller');
 const zoomInButton = document.querySelector('.scale__control--bigger');
 const zoomScaleLabel = document.querySelector('.scale__control--value');
 
-const effectsFieldsetNode = document.querySelector('.img-upload__effects');
+const effectsFieldset = document.querySelector('.img-upload__effects');
 const effectsLevelSlider = document.querySelector('.effect-level__slider');
 const effectsLevelValue = document.querySelector('.effect-level__value');
 
@@ -101,7 +102,7 @@ const renderScalingPhoto = (evt) => {
   }
   zoomScaleLabel.value = `${scale} %`;
 
-  const scaleDecimal = scale / 100;
+  const scaleDecimal = scale / SCALE_FULL;
   photoPreview.style.transform = `scale(${scaleDecimal})`;
 };
 
@@ -142,7 +143,7 @@ const renderPhotoEffect = (evt) => {
   }
 };
 
-const onEffectsFieldsetNode = (evt) => {
+const onEffectsFieldset = (evt) => {
   const clickedEffectRadio = evt.target.closest('.effects__radio');
   if (clickedEffectRadio) {
     renderPhotoEffect(evt);
@@ -153,14 +154,14 @@ const loadEditPhotoFuncs = () => {
   resetEdits();
   zoomOutButton.addEventListener('click', onZoomButtonClick);
   zoomInButton.addEventListener('click', onZoomButtonClick);
-  effectsFieldsetNode.addEventListener('change', onEffectsFieldsetNode);
+  effectsFieldset.addEventListener('change', onEffectsFieldset);
 };
 
 const unloadEditPhotoFuncs = () => {
   resetEdits();
   zoomOutButton.removeEventListener('click', onZoomButtonClick);
   zoomInButton.removeEventListener('click', onZoomButtonClick);
-  effectsFieldsetNode.removeEventListener('change', onEffectsFieldsetNode);
+  effectsFieldset.removeEventListener('change', onEffectsFieldset);
 };
 
 export {resetEdits, loadEditPhotoFuncs, unloadEditPhotoFuncs};

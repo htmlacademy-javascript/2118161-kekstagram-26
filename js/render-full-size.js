@@ -13,7 +13,7 @@ const commentsLoaderButton = fullPhotoWindow.querySelector('.comments-loader');
 const bigPictureImg = fullPhotoWindow.querySelector('.big-picture__img > img');
 const bigPictureLikesCount = fullPhotoWindow.querySelector('.likes-count');
 const bigPictureCommentsCount = fullPhotoWindow.querySelector('.comments-count');
-const commentsContainer = fullPhotoWindow.querySelector('.social__comments');
+const comments = fullPhotoWindow.querySelector('.social__comments');
 const bigPictureDescription = fullPhotoWindow.querySelector('.social__caption');
 
 const showCommentsAttributes = () => {
@@ -29,21 +29,21 @@ const hideCommentsAttributes = () => {
 
 const uploadPhotoAttributes = (similarPhotos, photoIndex) => {
   bigPictureImg.src = similarPhotos[photoIndex].url;
-  bigPictureLikesCount.textContent = similarPhotos[photoIndex].likes;
-  bigPictureCommentsCount.textContent = similarPhotos[photoIndex].comments.length;
+  bigPictureLikesCount.textContent = String(similarPhotos[photoIndex].likes);
+  bigPictureCommentsCount.textContent = String(similarPhotos[photoIndex].comments.length);
   bigPictureDescription.textContent = similarPhotos[photoIndex].description;
 };
 
 const setVisibleCommentsCount = () => {
-  const commentsHideCount = commentsContainer.querySelectorAll('.hidden').length;
-  const commentsAllCount = commentsContainer.querySelectorAll('.social__comment').length;
+  const commentsHideCount = comments.querySelectorAll('.hidden').length;
+  const commentsAllCount = comments.querySelectorAll('.social__comment').length;
   const commentsVisibleCount = commentsAllCount - commentsHideCount;
-  commentsCountAllLabel.textContent = commentsAllCount;
-  commentsCountVisibleLabel.textContent = commentsVisibleCount;
+  commentsCountAllLabel.textContent = String(commentsAllCount);
+  commentsCountVisibleLabel.textContent = String(commentsVisibleCount);
 };
 
 const uploadComments = (similarPhotos, photoIndex) => {
-  const commentsContainerFragment = document.createDocumentFragment();
+  const commentsFragment = document.createDocumentFragment();
   const commentsAll = similarPhotos[photoIndex].comments;
   const commentsAllCount = commentsAll.length;
 
@@ -72,14 +72,14 @@ const uploadComments = (similarPhotos, photoIndex) => {
         comment.classList.add('hidden');
       }
 
-      commentsContainerFragment.append(comment);
+      commentsFragment.append(comment);
     });
   } else {
     hideCommentsAttributes();
   }
 
-  commentsContainer.textContent = '';
-  commentsContainer.append(commentsContainerFragment);
+  comments.textContent = '';
+  comments.append(commentsFragment);
   setVisibleCommentsCount();
 };
 
@@ -102,17 +102,17 @@ const closeFullPhotoModal = () => {
 };
 
 const showMoreComments = () => {
-  const commentsHideNodes = commentsContainer.querySelectorAll('.hidden');
-  const commentsHideCount = commentsHideNodes.length;
+  const commentsHides = comments.querySelectorAll('.hidden');
+  const commentsHideCount = commentsHides.length;
 
   if (commentsHideCount > VISIBLE_COMMENT_COUNT) {
     for (let i = 0; i < VISIBLE_COMMENT_COUNT; i++) {
-      commentsHideNodes[i].classList.remove('hidden');
+      commentsHides[i].classList.remove('hidden');
     }
   } else {
     if (commentsHideCount !== 0) {
       for (let i = 0; i < commentsHideCount; i++) {
-        commentsHideNodes[i].classList.remove('hidden');
+        commentsHides[i].classList.remove('hidden');
       }
       commentsLoaderButton.classList.add('hidden');
     }

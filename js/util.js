@@ -12,7 +12,7 @@ const isStringSatisfyMaxLength = (string, maxLength) => string.length <= maxLeng
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
 
-const photoEditNode = document.querySelector('.img-upload__overlay');
+const photoEdit = document.querySelector('.img-upload__overlay');
 
 const successLoadMessageTemplate = document.querySelector('#success')
   .content
@@ -63,7 +63,7 @@ const openErrorLoadMessage = () => {
   const errorLoadMessage = errorLoadMessageTemplate.cloneNode(true);
   const errorLoadButton = errorLoadMessage.querySelector('.error__button');
 
-  photoEditNode.classList.add('hidden');
+  photoEdit.classList.add('hidden');
   document.body.append(errorLoadMessage);
   errorLoadButton.addEventListener('click', onErrorLoadButtonClick);
   document.addEventListener('keydown', onErrorMessageEscKeydown);
@@ -78,7 +78,7 @@ const closeErrorLoadMessage = () => {
   document.removeEventListener('keydown', onErrorMessageEscKeydown);
   document.removeEventListener('click', onErrorDocumentClick);
   errorLoadMessage.remove();
-  photoEditNode.classList.remove('hidden');
+  photoEdit.classList.remove('hidden');
 };
 
 function onErrorLoadButtonClick () {
