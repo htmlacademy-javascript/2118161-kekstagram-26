@@ -7,13 +7,13 @@ const MAX_DESCRIPTION_SYMBOLS_COUNT = 140;
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
 const uploadFileForm = document.querySelector('.img-upload__form');
-const uploadFileNode = uploadFileForm.querySelector('#upload-file');
+const uploadFile = uploadFileForm.querySelector('#upload-file');
 const uploadPreview = uploadFileForm.querySelector('.img-upload__preview > img');
-const photoEditNode = uploadFileForm.querySelector('.img-upload__overlay');
-const hashtagsInputNode = uploadFileForm.querySelector('.text__hashtags');
-const descriptionInputNode = uploadFileForm.querySelector('.text__description');
-const cancelButton = photoEditNode.querySelector('#upload-cancel');
-const submitButton = photoEditNode.querySelector('#upload-submit');
+const photoEdit = uploadFileForm.querySelector('.img-upload__overlay');
+const hashtagsInput = uploadFileForm.querySelector('.text__hashtags');
+const descriptionInput = uploadFileForm.querySelector('.text__description');
+const cancelButton = photoEdit.querySelector('#upload-cancel');
+const submitButton = photoEdit.querySelector('#upload-submit');
 
 const pristine = new Pristine(uploadFileForm, {
   classTo: 'img-upload__field-wrapper',
@@ -27,8 +27,7 @@ const re = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
 
 const removeHashtagsExcessSpace = (value) => {
   const hashtagsArray = value.split(' ');
-  const hashtags = hashtagsArray.filter((hashtag) => hashtag !== '');
-  return hashtags;
+  return hashtagsArray.filter((hashtag) => hashtag !== '');
 };
 
 const validateHashtagsContent = (value) => {
@@ -44,10 +43,7 @@ const validateHashtagsContentErrorMessage = 'Хэш-тег должен начи
 
 const validateHashtagsQuantity = (value) => {
   const hashtags = removeHashtagsExcessSpace(value);
-  if (hashtags.length > MAX_HASHTAGS_COUNT) {
-    return false;
-  }
-  return true;
+  return hashtags.length <= MAX_HASHTAGS_COUNT;
 };
 const validateHashtagsQuantityErrorMessage = 'Нельзя указать больше пяти хэш-тегов';
 
@@ -70,35 +66,35 @@ const validateDescriptionSymbolsQuantity  = (description) => {
 };
 const validateDescriptionSymbolsQuantityErrorMessage = 'Длина комментария не может составлять больше 140 символов';
 
-pristine.addValidator(hashtagsInputNode, validateHashtagsContent, validateHashtagsContentErrorMessage);
-pristine.addValidator(hashtagsInputNode, validateHashtagsQuantity, validateHashtagsQuantityErrorMessage);
-pristine.addValidator(hashtagsInputNode, validateHashtagsRepeats, validateHashtagsRepeatsErrorMessage);
-pristine.addValidator(descriptionInputNode, validateDescriptionSymbolsQuantity, validateDescriptionSymbolsQuantityErrorMessage);
+pristine.addValidator(hashtagsInput, validateHashtagsContent, validateHashtagsContentErrorMessage);
+pristine.addValidator(hashtagsInput, validateHashtagsQuantity, validateHashtagsQuantityErrorMessage);
+pristine.addValidator(hashtagsInput, validateHashtagsRepeats, validateHashtagsRepeatsErrorMessage);
+pristine.addValidator(descriptionInput, validateDescriptionSymbolsQuantity, validateDescriptionSymbolsQuantityErrorMessage);
 
-const onTextInputNodeKeydown = (evt) => {
+const onTextInputKeydown = (evt) => {
   evt.stopPropagation();
 };
 
 const resetTextFields = () => {
-  const errorTextNodes = uploadFileForm.querySelectorAll('.input__error');
-  if (errorTextNodes.length > 0) {
-    errorTextNodes.forEach((textNode) => {textNode.textContent = '';});
+  const errorText = uploadFileForm.querySelectorAll('.input__error');
+  if (errorText.length > 0) {
+    errorText.forEach((text) => {text.textContent = '';});
   }
 
-  hashtagsInputNode.value = '';
-  descriptionInputNode.value = '';
+  hashtagsInput.value = '';
+  descriptionInput.value = '';
 };
 
 const closeEditPhotoModal = () => {
   document.body.classList.remove('modal-open');
-  photoEditNode.classList.add('hidden');
+  photoEdit.classList.add('hidden');
 
   resetEdits();
   resetTextFields();
   unloadEditPhotoFuncs();
 
-  hashtagsInputNode.removeEventListener('keydown', onTextInputNodeKeydown);
-  descriptionInputNode.removeEventListener('keydown', onTextInputNodeKeydown);
+  hashtagsInput.removeEventListener('keydown', onTextInputKeydown);
+  descriptionInput.removeEventListener('keydown', onTextInputKeydown);
   uploadFileForm.removeEventListener('submit', onSubmitUploadFileForm);
   cancelButton.removeEventListener('click', onCancelButtonClick);
   document.removeEventListener('keydown', onDocumentKeydown);
@@ -110,13 +106,13 @@ function onCancelButtonClick () {
 
 const openEditPhotoModal = () => {
   document.body.classList.add('modal-open');
-  photoEditNode.classList.remove('hidden');
+  photoEdit.classList.remove('hidden');
 
   resetEdits();
   loadEditPhotoFuncs();
 
-  hashtagsInputNode.addEventListener('keydown', onTextInputNodeKeydown);
-  descriptionInputNode.addEventListener('keydown', onTextInputNodeKeydown);
+  hashtagsInput.addEventListener('keydown', onTextInputKeydown);
+  descriptionInput.addEventListener('keydown', onTextInputKeydown);
   uploadFileForm.addEventListener('submit', onSubmitUploadFileForm);
   cancelButton.addEventListener('click', onCancelButtonClick);
   document.addEventListener('keydown', onDocumentKeydown);
@@ -131,8 +127,8 @@ function onDocumentKeydown (evt) {
   }
 }
 
-const onUploadFileNodeChange = () => {
-  const file = uploadFileNode.files[0];
+const onUploadFileChange = () => {
+  const file = uploadFile.files[0];
   const fileName = file.name.toLowerCase();
   const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
 
@@ -142,7 +138,7 @@ const onUploadFileNodeChange = () => {
   openEditPhotoModal();
 };
 
-uploadFileNode.addEventListener('change', onUploadFileNodeChange);
+uploadFile.addEventListener('change', onUploadFileChange);
 
 const onSuccessSubmit = () => {
   unblockSubmitButton();

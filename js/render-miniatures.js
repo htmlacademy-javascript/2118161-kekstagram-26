@@ -3,7 +3,7 @@ import {getRandomArrayElement} from './util.js';
 
 let photosData;
 
-const otherUsersPhotosContainer = document.querySelector('.pictures');
+const otherUsersPhotos = document.querySelector('.pictures');
 const photoTemplate = document.querySelector('#picture')
   .content
   .querySelector('.picture');
@@ -63,10 +63,10 @@ const setDiscussedFilter = (cb) => {
 const renderSimilarPhotos = (similarPhotos) => {
   photosData = similarPhotos;
 
-  const allPhotosNodes = otherUsersPhotosContainer.querySelectorAll('.picture');
-  if (allPhotosNodes.length !== 0) {
-    allPhotosNodes.forEach ((photoNode) => {
-      photoNode.remove();
+  const allPhotos = otherUsersPhotos.querySelectorAll('.picture');
+  if (allPhotos.length !== 0) {
+    allPhotos.forEach ((photo) => {
+      photo.remove();
     });
   }
 
@@ -75,19 +75,19 @@ const renderSimilarPhotos = (similarPhotos) => {
   similarPhotos.forEach(({url, likes, comments}) => {
     const otherUserPhoto = photoTemplate.cloneNode(true);
     otherUserPhoto.querySelector('.picture__img').src = url;
-    otherUserPhoto.querySelector('.picture__likes').textContent = likes;
-    otherUserPhoto.querySelector('.picture__comments').textContent = comments.length;
+    otherUserPhoto.querySelector('.picture__likes').textContent = String(likes);
+    otherUserPhoto.querySelector('.picture__comments').textContent = String(comments.length);
     similarPhotosFragment.append(otherUserPhoto);
   });
 
-  otherUsersPhotosContainer.append(similarPhotosFragment);
-  otherUsersPhotosContainer.addEventListener('click', onPhotoMiniatureClick);
+  otherUsersPhotos.append(similarPhotosFragment);
+  otherUsersPhotos.addEventListener('click', onPhotoMiniatureClick);
 };
 
 const openFullSize = (photoMiniature) => {
-  const clickedPhotoNode = photoMiniature.closest('.picture');
-  if (clickedPhotoNode) {
-    const clickedPhotoIndex = photosData.findIndex( (photo) => clickedPhotoNode.children[0].src.endsWith(photo.url));
+  const clickedPhoto = photoMiniature.closest('.picture');
+  if (clickedPhoto) {
+    const clickedPhotoIndex = photosData.findIndex( (photo) => clickedPhoto.children[0].src.endsWith(photo.url));
     openFullPhotoModal();
     uploadPhotoAttributes(photosData, clickedPhotoIndex);
     showCommentsAttributes();
